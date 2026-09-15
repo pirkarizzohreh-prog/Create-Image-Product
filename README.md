@@ -23,8 +23,8 @@ docker compose up --build
 ```
 
 - App: http://localhost:3000 (log in with `DJANGO_SUPERUSER_EMAIL` / `DJANGO_SUPERUSER_PASSWORD` from `.env`)
-- API: http://localhost:8000/api/ (interactive docs at `/api/docs/`)
-- Django admin: http://localhost:8000/admin/
+- API: http://localhost:8001/api/ (interactive docs at `/api/docs/`)
+- Django admin: http://localhost:8001/admin/
 
 Full setup options (bare-process dev without Docker, S3/R2 configuration, AI provider setup,
 production deployment checklist) are in **`docs/DEPLOYMENT.md`**.

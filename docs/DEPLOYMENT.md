@@ -14,9 +14,13 @@ creates the admin user on first boot), `worker` (Celery), `beat` (Celery beat, f
 tasks like periodic batch-progress rollups or expiring old ZIP downloads), and `frontend` (Next.js).
 
 - Frontend: http://localhost:3000
-- Backend API: http://localhost:8000/api/
-- Backend API docs (Swagger UI): http://localhost:8000/api/docs/
-- Django admin: http://localhost:8000/admin/ (log in with `DJANGO_SUPERUSER_EMAIL` / `DJANGO_SUPERUSER_PASSWORD`)
+- Backend API: http://localhost:8001/api/
+- Backend API docs (Swagger UI): http://localhost:8001/api/docs/
+- Django admin: http://localhost:8001/admin/ (log in with `DJANGO_SUPERUSER_EMAIL` / `DJANGO_SUPERUSER_PASSWORD`)
+
+(The backend's host-side port defaults to 8001, not 8000, to avoid colliding with anything else already
+using 8000 on your machine — see `BACKEND_HOST_PORT` / `NEXT_PUBLIC_API_BASE_URL` in `.env.example`.
+Containers always reach it at `backend:8000` internally regardless.)
 
 The default `.env` uses `STORAGE_BACKEND=local`, which stores uploads/outputs on the `backend`
 container's filesystem (a named Docker volume, `media`) — this is fine for local dev/demo but is
