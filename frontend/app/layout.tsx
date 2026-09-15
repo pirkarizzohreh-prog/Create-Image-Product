@@ -5,6 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "PixelForge Studio",
   description: "Automated e-commerce product image processing",
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
