@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.common.permissions import IsOwnerOrReviewerReadOnly
+from apps.common.urls_util import absolutize
 
 from .models import Batch, ProductImage
 from .serializers import BatchCreateSerializer, BatchListSerializer, ProductImageSerializer
@@ -138,5 +139,5 @@ class BatchDownloadView(APIView):
         if default_storage.exists(zip_path):
             default_storage.delete(zip_path)
         saved_path = default_storage.save(zip_path, ContentFile(buffer.read()))
-        url = default_storage.url(saved_path)
+        url = absolutize({"request": request}, default_storage.url(saved_path))
         return Response({"url": url})

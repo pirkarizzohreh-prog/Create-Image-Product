@@ -1,3 +1,4 @@
+import django_filters
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status
@@ -8,10 +9,20 @@ from .models import JobStatus, ProcessingJob
 from .serializers import JobDetailSerializer, JobSummarySerializer
 
 
+class JobFilter(django_filters.FilterSet):
+    # Exposed as `batch` (not `image__batch`) to match the query param used
+    # by every other endpoint that filters on a batch (images, download).
+    batch = django_filters.UUIDFilter(field_name="image__batch")
+
+    class Meta:
+        model = ProcessingJob
+        fields = ["status", "mode", "batch"]
+
+
 class JobListView(generics.ListAPIView):
     serializer_class = JobSummarySerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["status", "mode", "image__batch"]
+    filterset_class = JobFilter
 
     def get_queryset(self):
         user = self.request.user
