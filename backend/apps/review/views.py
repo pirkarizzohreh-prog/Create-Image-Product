@@ -38,7 +38,7 @@ class ReviewItemViewSet(viewsets.ReadOnlyModelViewSet):
         item.save()
 
         notify_uploader(job, "Your image was approved", f"Job {job.id} passed manual review and is ready to download.")
-        return Response(ReviewItemSerializer(item).data)
+        return Response(ReviewItemSerializer(item, context={"request": request}).data)
 
     @action(detail=True, methods=["post"])
     def reject(self, request, pk=None):
@@ -59,7 +59,7 @@ class ReviewItemViewSet(viewsets.ReadOnlyModelViewSet):
         item.save()
 
         notify_uploader(job, "Your image was rejected", f"Job {job.id} was rejected: {item.decision_notes}")
-        return Response(ReviewItemSerializer(item).data)
+        return Response(ReviewItemSerializer(item, context={"request": request}).data)
 
     @action(detail=True, methods=["post"])
     def rerun(self, request, pk=None):
@@ -84,7 +84,7 @@ class ReviewItemViewSet(viewsets.ReadOnlyModelViewSet):
         item.decision_notes = f"Re-run requested; new job {new_job.id} queued."
         item.save()
 
-        return Response(ReviewItemSerializer(item).data, status=status.HTTP_201_CREATED)
+        return Response(ReviewItemSerializer(item, context={"request": request}).data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["post"])
     def replace(self, request, pk=None):
@@ -106,4 +106,4 @@ class ReviewItemViewSet(viewsets.ReadOnlyModelViewSet):
         item.save()
 
         notify_uploader(job, "Your image was updated", f"Job {job.id} output was manually replaced by a reviewer.")
-        return Response(ReviewItemSerializer(item).data)
+        return Response(ReviewItemSerializer(item, context={"request": request}).data)

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.common.urls_util import absolutize
+
 from .models import Batch, ProductImage
 
 
@@ -49,7 +51,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
     def get_source_url(self, obj):
         try:
-            return obj.source_file.url
+            return absolutize(self.context, obj.source_file.url)
         except ValueError:
             return None
 
@@ -57,4 +59,4 @@ class ProductImageSerializer(serializers.ModelSerializer):
         from apps.jobs.serializers import JobSummarySerializer
 
         job = obj.jobs.order_by("-created_at").first()
-        return JobSummarySerializer(job).data if job else None
+        return JobSummarySerializer(job, context=self.context).data if job else None

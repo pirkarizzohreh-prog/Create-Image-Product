@@ -42,9 +42,22 @@ class BatchDetailView(generics.RetrieveAPIView):
     queryset = Batch.objects.all()
 
 
-class ImageUploadView(APIView):
-    """Accepts multipart POST with a `batch` id and one or more `files`,
-    supporting single or bulk upload from the same endpoint."""
+class ImageUploadView(generics.ListAPIView):
+    """GET lists images (optionally filtered by ?batch=<id>); POST accepts
+    multipart with a `batch` id and one or more `files`, supporting single
+    or bulk upload from the same endpoint."""
+
+    serializer_class = ProductImageSerializer
+    permission_classes = [IsUploaderAuthenticated]
+
+    def get_queryset(self):
+        qs = ProductImage.objects.select_related("batch").order_by("created_at")
+        batch_id = self.request.query_params.get("batch")
+        if batch_id:
+            qs = qs.filter(batch_id=batch_id)
+        if self.request.user.role == "uploader":
+            qs = qs.filter(batch__owner=self.request.user)
+        return qs
 
     def post(self, request):
         batch_id = request.data.get("batch")

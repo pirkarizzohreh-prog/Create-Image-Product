@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.common.urls_util import absolutize
+
 from .models import JobStageLog, ProcessingJob
 
 
@@ -17,7 +19,7 @@ class JobSummarySerializer(serializers.ModelSerializer):
         fields = ["id", "status", "mode", "qc_passed", "output_url", "created_at", "finished_at"]
 
     def get_output_url(self, obj):
-        return obj.output_url
+        return absolutize(self.context, obj.output_url)
 
 
 class JobDetailSerializer(serializers.ModelSerializer):
@@ -38,10 +40,10 @@ class JobDetailSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_output_url(self, obj):
-        return obj.output_url
+        return absolutize(self.context, obj.output_url)
 
     def get_source_url(self, obj):
         try:
-            return obj.image.source_file.url
+            return absolutize(self.context, obj.image.source_file.url)
         except ValueError:
             return None

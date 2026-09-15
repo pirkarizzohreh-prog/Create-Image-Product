@@ -36,4 +36,4 @@ class JobRetryView(APIView):
         from apps.jobs.services import create_and_enqueue_job
 
         new_job = create_and_enqueue_job(job.image, attempt=job.attempt + 1)
-        return Response(JobDetailSerializer(new_job).data, status=status.HTTP_201_CREATED)
+        return Response(JobDetailSerializer(new_job, context={"request": request}).data, status=status.HTTP_201_CREATED)
