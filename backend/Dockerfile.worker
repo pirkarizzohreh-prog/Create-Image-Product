@@ -26,8 +26,8 @@ COPY . .
 RUN chmod +x entrypoint-worker.sh
 
 RUN useradd --create-home --shell /bin/bash appuser \
-    && mkdir -p /app/media \
-    && chown -R appuser:appuser /app
+    && mkdir -p /app/media /home/appuser/.u2net \
+    && chown -R appuser:appuser /app /home/appuser/.u2net
 USER appuser
 ENV HOME=/home/appuser
 
