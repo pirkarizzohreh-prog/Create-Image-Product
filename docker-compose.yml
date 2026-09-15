@@ -60,9 +60,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/healthz/"]
       interval: 10s
-      timeout: 5s
+      timeout: 10s
       retries: 10
-      start_period: 30s
+      start_period: 60s
 
   worker:
     build:
@@ -75,7 +75,13 @@ services:
       POSTGRES_HOST: db
       REDIS_URL: redis://redis:6379/0
     depends_on:
-      backend:
+      # Worker talks to Postgres/Redis directly, never to the backend's HTTP
+      # server, so it shouldn't wait on backend's healthcheck - a flaky/slow
+      # healthcheck on backend would otherwise block worker (and every job)
+      # from ever starting even though worker's real dependencies are fine.
+      db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     volumes:
       - media:/app/media
@@ -93,7 +99,9 @@ services:
       POSTGRES_HOST: db
       REDIS_URL: redis://redis:6379/0
     depends_on:
-      backend:
+      db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   frontend:
